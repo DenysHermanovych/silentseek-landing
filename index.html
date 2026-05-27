@@ -388,12 +388,7 @@
                     <p class="text-gray-400">We'll be in touch within 24 hours.</p>
                 </div>
                 <!-- Form -->
-                <form id="demo-form" action="https://formsubmit.co/denys@silentseek.site" method="POST" class="space-y-6">
-                    <!-- FormSubmit.co config -->
-                    <input type="hidden" name="_subject" value="New Demo Request — SilentSeek">
-                    <input type="hidden" name="_captcha" value="false">
-                    <input type="hidden" name="_next" value="https://silentseek.site/#contact-form">
-                    <input type="hidden" name="_template" value="table">
+                <form id="demo-form" class="space-y-6">
                     <div class="grid md:grid-cols-2 gap-6">
                         <div>
                             <label for="full-name" class="block text-sm font-medium text-gray-300 mb-2">Full Name <span class="text-teal">*</span></label>
@@ -505,11 +500,38 @@
         }, { threshold: 0.5 });
         counters.forEach(c => counterObserver.observe(c));
 
-        // ── Contact Form — handled natively by FormSubmit.co (POST + redirect) ──
-        // No JS needed: FormSubmit.co sends email to denys@silentseek.site on submit.
+        // ── Contact Form → Telegram Bot via /api/contact ──
+        const form = document.getElementById('demo-form');
+        form && form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = form.querySelector('button[type=submit]');
+            const originalText = btn.textContent;
+            btn.textContent = 'Sending...'; btn.disabled = true;
+            const data = {
+                name:    form.querySelector('#full-name').value,
+                email:   form.querySelector('#work-email').value,
+                company: form.querySelector('#company').value,
+                message: form.querySelector('#message').value,
+            };
+            try {
+                const res = await fetch('/api/contact', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data),
+                });
+                if (res.ok) {
+                    form.style.display = 'none';
+                    document.getElementById('form-success').classList.remove('hidden');
+                } else {
+                    btn.textContent = 'Error. Try again.'; btn.disabled = false;
+                }
+            } catch {
+                btn.textContent = 'Error. Try again.'; btn.disabled = false;
+            }
+        });
 
-        // TODO Sprint 3: Scroll-triggered fade-in animations (Intersection Observer on .fade-in-hidden)
-        // TODO Sprint 3: Active nav highlight on scroll (Intersection Observer on each section)
+        // TODO Sprint 3: Scroll-triggered fade-in animations
+        // TODO Sprint 3: Active nav highlight on scroll
     </script>
 </body>
 </html>
