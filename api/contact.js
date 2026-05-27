@@ -11,8 +11,8 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-    const CHAT_ID   = process.env.TELEGRAM_CHAT_ID;
+    const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "8178439423:AAGLzQZ_-_2AAnyd1GT9QVGR5rnjyPz2jTs";
+    const CHAT_ID   = process.env.TELEGRAM_CHAT_ID || "744691505";
 
     if (!BOT_TOKEN || !CHAT_ID) {
         console.error('Missing Telegram env vars');
