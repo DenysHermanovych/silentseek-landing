@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SilentSeek | Advanced Acoustic Monitoring</title>
     <meta name="description" content="Real-time acoustic sensing platform designed to monitor, identify, and track aerial vehicles using distributed IoT sensor networks and cloud-based AI.">
+    <!-- Open Graph -->
+    <meta property="og:title" content="SilentSeek | Advanced Acoustic Monitoring">
+    <meta property="og:description" content="Real-time acoustic sensing platform for industrial safety, powered by AWS IoT Core, EC2, and S3.">
+    <meta property="og:image" content="https://silentseek.site/og-preview.png">
+    <meta property="og:url" content="https://silentseek.site">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SilentSeek | Advanced Acoustic Monitoring">
+    <meta name="twitter:description" content="Real-time acoustic sensing platform for industrial safety, powered by AWS.">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -78,13 +87,43 @@
         }
 
         .glass-panel {
-            background: rgba(26, 31, 46, 0.7); /* Charcoal with opacity */
+            background: rgba(26, 31, 46, 0.7);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
+
+        /* Scroll Progress Bar */
+        #scroll-progress {
+            position: fixed; top: 0; left: 0; height: 3px;
+            background: linear-gradient(90deg, #14b8a6, #0f766e);
+            z-index: 9999; width: 0%; transition: width 0.1s linear;
+        }
+
+        /* Mobile Menu */
+        #mobile-menu {
+            max-height: 0; overflow: hidden;
+            transition: max-height 0.3s ease-in-out;
+        }
+        #mobile-menu.open { max-height: 300px; }
+
+        /* Fade-in animations (Sprint 3 TODO) */
+        .fade-in-hidden { opacity: 0; transform: translateY(20px); }
+        .fade-in-visible { opacity: 1; transform: translateY(0); transition: opacity 0.6s ease, transform 0.6s ease; }
+
+        /* Step connector arrows */
+        .step-arrow {
+            display: flex; align-items: center; justify-content: center;
+            color: rgba(20, 184, 166, 0.4); font-size: 1.5rem;
+        }
+        @media (max-width: 768px) { .step-arrow { transform: rotate(90deg); } }
+
+        /* Counter */
+        .counter-val { font-variant-numeric: tabular-nums; }
     </style>
 </head>
 <body class="antialiased selection:bg-teal selection:text-navy relative">
+    <!-- Scroll Progress Bar -->
+    <div id="scroll-progress"></div>
 
     <!-- Header / Navigation -->
     <header class="fixed w-full top-0 z-50 glass-panel border-b border-gray-800">
@@ -97,13 +136,31 @@
                     </div>
                     <span class="font-bold text-xl tracking-wider text-white">SilentSeek</span>
                 </div>
-                <!-- Links -->
+                <!-- Desktop Links -->
                 <nav class="hidden md:flex space-x-8">
-                    <a href="#technology" class="text-gray-300 hover:text-teal transition-colors text-sm font-medium tracking-wide">Technology</a>
-                    <a href="#use-cases" class="text-gray-300 hover:text-teal transition-colors text-sm font-medium tracking-wide">Use Cases</a>
-                    <a href="#team" class="text-gray-300 hover:text-teal transition-colors text-sm font-medium tracking-wide">Team</a>
+                    <a href="#technology" class="nav-link text-gray-300 hover:text-teal transition-colors text-sm font-medium tracking-wide">Technology</a>
+                    <a href="#how-it-works" class="nav-link text-gray-300 hover:text-teal transition-colors text-sm font-medium tracking-wide">How It Works</a>
+                    <a href="#use-cases" class="nav-link text-gray-300 hover:text-teal transition-colors text-sm font-medium tracking-wide">Use Cases</a>
+                    <a href="#team" class="nav-link text-gray-300 hover:text-teal transition-colors text-sm font-medium tracking-wide">Team</a>
+                    <a href="#contact-form" class="nav-link text-gray-300 hover:text-teal transition-colors text-sm font-medium tracking-wide">Contact</a>
                 </nav>
+                <!-- Mobile Hamburger -->
+                <button id="menu-btn" class="md:hidden flex flex-col gap-1.5 p-2 group" aria-label="Toggle menu">
+                    <span class="w-6 h-0.5 bg-gray-300 group-hover:bg-teal transition-colors"></span>
+                    <span class="w-6 h-0.5 bg-gray-300 group-hover:bg-teal transition-colors"></span>
+                    <span class="w-6 h-0.5 bg-gray-300 group-hover:bg-teal transition-colors"></span>
+                </button>
             </div>
+        </div>
+        <!-- Mobile Dropdown Menu -->
+        <div id="mobile-menu" class="glass-panel border-t border-gray-800">
+            <nav class="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-3">
+                <a href="#technology" class="mobile-nav-link text-gray-300 hover:text-teal transition-colors text-sm font-medium py-1">Technology</a>
+                <a href="#how-it-works" class="mobile-nav-link text-gray-300 hover:text-teal transition-colors text-sm font-medium py-1">How It Works</a>
+                <a href="#use-cases" class="mobile-nav-link text-gray-300 hover:text-teal transition-colors text-sm font-medium py-1">Use Cases</a>
+                <a href="#team" class="mobile-nav-link text-gray-300 hover:text-teal transition-colors text-sm font-medium py-1">Team</a>
+                <a href="#contact-form" class="mobile-nav-link text-gray-300 hover:text-teal transition-colors text-sm font-medium py-1">Contact</a>
+            </nav>
         </div>
     </header>
 
@@ -173,6 +230,71 @@
                     <p class="text-gray-400 leading-relaxed relative z-10">
                         Our acoustic telemetry relies on a robust AWS infrastructure to ensure real-time performance and scalability. We utilize <strong class="text-gray-200">AWS IoT Core</strong> for secure, bidirectional communication with our decentralized sensor nodes. High-throughput acoustic data streams are processed using <strong class="text-gray-200">Amazon EC2</strong> instances optimized for complex machine learning models, performing real-time sound classification. Processed acoustic signature datasets are durably stored in <strong class="text-gray-200">Amazon S3</strong>, empowering continuous training of our predictive audio models.
                     </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="py-24 bg-charcoal relative border-t border-gray-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">How It Works</h2>
+                <div class="w-20 h-1 bg-teal mx-auto rounded"></div>
+            </div>
+            <div class="flex flex-col md:flex-row items-center md:items-stretch gap-4 md:gap-0">
+                <!-- Step 1 -->
+                <div class="glass-panel flex-1 p-8 rounded-2xl border border-gray-800 text-center relative group">
+                    <div class="absolute inset-0 bg-teal/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div class="w-16 h-16 bg-charcoal rounded-full flex items-center justify-center mx-auto mb-5 border border-teal/30 text-2xl shadow-[0_0_20px_rgba(20,184,166,0.15)]">🎙️</div>
+                    <div class="inline-block px-3 py-1 bg-teal/10 border border-teal/20 rounded-full text-teal text-xs font-bold mb-3 uppercase tracking-widest">Step 01</div>
+                    <h3 class="text-xl font-bold text-white mb-3">Detect</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Edge IoT sensors capture acoustic signatures in real-time using ultra-sensitive microphone arrays powered by ESP32 microcontrollers.</p>
+                </div>
+                <!-- Arrow -->
+                <div class="step-arrow px-4 text-3xl hidden md:flex">›</div>
+                <div class="step-arrow md:hidden py-2 text-3xl">›</div>
+                <!-- Step 2 -->
+                <div class="glass-panel flex-1 p-8 rounded-2xl border border-gray-800 text-center relative group">
+                    <div class="absolute inset-0 bg-teal/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div class="w-16 h-16 bg-charcoal rounded-full flex items-center justify-center mx-auto mb-5 border border-teal/30 text-2xl shadow-[0_0_20px_rgba(20,184,166,0.15)]">📡</div>
+                    <div class="inline-block px-3 py-1 bg-teal/10 border border-teal/20 rounded-full text-teal text-xs font-bold mb-3 uppercase tracking-widest">Step 02</div>
+                    <h3 class="text-xl font-bold text-white mb-3">Transmit</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Data streams securely to <strong class="text-gray-200">AWS IoT Core</strong> via MQTT protocol with end-to-end encryption, ensuring zero data loss at scale.</p>
+                </div>
+                <!-- Arrow -->
+                <div class="step-arrow px-4 text-3xl hidden md:flex">›</div>
+                <div class="step-arrow md:hidden py-2 text-3xl">›</div>
+                <!-- Step 3 -->
+                <div class="glass-panel flex-1 p-8 rounded-2xl border border-gray-800 text-center relative group">
+                    <div class="absolute inset-0 bg-teal/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div class="w-16 h-16 bg-charcoal rounded-full flex items-center justify-center mx-auto mb-5 border border-teal/30 text-2xl shadow-[0_0_20px_rgba(20,184,166,0.15)]">🧠</div>
+                    <div class="inline-block px-3 py-1 bg-teal/10 border border-teal/20 rounded-full text-teal text-xs font-bold mb-3 uppercase tracking-widest">Step 03</div>
+                    <h3 class="text-xl font-bold text-white mb-3">Analyze & Alert</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">ML models on <strong class="text-gray-200">Amazon EC2</strong> detect anomalies instantly. Results are stored in <strong class="text-gray-200">Amazon S3</strong> and trigger real-time alerts.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Metrics Section -->
+    <section id="metrics" class="py-20 bg-navy relative border-t border-gray-900">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="glass-panel rounded-3xl border border-gray-800 p-8 md:p-12 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div class="metric-item">
+                    <div class="text-4xl md:text-5xl font-bold text-teal mb-2"><span class="counter-val" data-target="50" data-prefix="<" data-suffix="ms">0</span></div>
+                    <div class="text-gray-400 text-sm font-medium uppercase tracking-wide">Detection Latency</div>
+                </div>
+                <div class="metric-item">
+                    <div class="text-4xl md:text-5xl font-bold text-teal mb-2"><span class="counter-val" data-target="3" data-suffix="">0</span></div>
+                    <div class="text-gray-400 text-sm font-medium uppercase tracking-wide">AWS Services Integrated</div>
+                </div>
+                <div class="metric-item">
+                    <div class="text-4xl md:text-5xl font-bold text-teal mb-2"><span class="counter-val" data-target="99" data-suffix=".9%">0</span></div>
+                    <div class="text-gray-400 text-sm font-medium uppercase tracking-wide">Uptime SLA</div>
+                </div>
+                <div class="metric-item">
+                    <div class="text-4xl md:text-5xl font-bold text-teal mb-2"><span class="counter-val" data-target="24" data-suffix="/7">0</span></div>
+                    <div class="text-gray-400 text-sm font-medium uppercase tracking-wide">Monitoring Coverage</div>
                 </div>
             </div>
         </div>
@@ -248,6 +370,56 @@
         </div>
     </section>
 
+    <!-- Contact Form Section -->
+    <section id="contact-form" class="py-24 bg-charcoal relative border-t border-gray-900">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Request a Demo</h2>
+                <div class="w-20 h-1 bg-teal mx-auto rounded mb-4"></div>
+                <p class="text-gray-400">Fill in the form and our team will get back to you within 24 hours.</p>
+            </div>
+            <div class="glass-panel rounded-3xl border border-gray-800 p-8 md:p-12 shadow-2xl">
+                <!-- Success message (hidden by default) -->
+                <div id="form-success" class="hidden text-center py-8">
+                    <div class="w-16 h-16 bg-teal/10 border border-teal/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-2">Thank you!</h3>
+                    <p class="text-gray-400">We'll be in touch within 24 hours.</p>
+                </div>
+                <!-- Form -->
+                <form id="demo-form" action="https://formspree.io/f/YOUR_FORMSPREE_ID" method="POST" class="space-y-6">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="full-name" class="block text-sm font-medium text-gray-300 mb-2">Full Name <span class="text-teal">*</span></label>
+                            <input id="full-name" type="text" name="name" required placeholder="John Smith"
+                                class="w-full bg-navy border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-teal focus:ring-1 focus:ring-teal transition-colors">
+                        </div>
+                        <div>
+                            <label for="work-email" class="block text-sm font-medium text-gray-300 mb-2">Work Email <span class="text-teal">*</span></label>
+                            <input id="work-email" type="email" name="email" required placeholder="john@company.com"
+                                class="w-full bg-navy border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-teal focus:ring-1 focus:ring-teal transition-colors">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="company" class="block text-sm font-medium text-gray-300 mb-2">Company <span class="text-teal">*</span></label>
+                        <input id="company" type="text" name="company" required placeholder="Acme Corp"
+                            class="w-full bg-navy border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-teal focus:ring-1 focus:ring-teal transition-colors">
+                    </div>
+                    <div>
+                        <label for="message" class="block text-sm font-medium text-gray-300 mb-2">Message <span class="text-gray-600">(optional)</span></label>
+                        <textarea id="message" name="message" rows="4" placeholder="Tell us about your use case..."
+                            class="w-full bg-navy border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-teal focus:ring-1 focus:ring-teal transition-colors resize-none"></textarea>
+                    </div>
+                    <button type="submit"
+                        class="w-full py-4 bg-teal text-navy font-bold text-lg rounded-xl hover:bg-tealDark hover:text-white transition-all duration-300 shadow-[0_0_20px_rgba(20,184,166,0.3)] hover:shadow-[0_0_35px_rgba(20,184,166,0.6)]">
+                        Request a Demo →
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer id="contact" class="bg-[#050810] py-12 border-t border-gray-900">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
@@ -282,7 +454,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 pt-8 border-t border-gray-900 flex flex-col md:flex-row justify-between items-center gap-4 text-gray-500 text-sm">
             <div class="flex space-x-6">
                 <a href="#" class="hover:text-teal transition-colors">Privacy Policy</a>
-                <a href="#" class="hover:text-teal transition-colors">Terms & Conditions</a>
+                <a href="#" class="hover:text-teal transition-colors">Terms &amp; Conditions</a>
                 <a href="#team" class="hover:text-teal transition-colors">About Us</a>
             </div>
             <div>
@@ -291,5 +463,63 @@
         </div>
     </footer>
 
+    <script>
+        // ── Hamburger Menu ──
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+        document.querySelectorAll('.mobile-nav-link').forEach(link => {
+            link.addEventListener('click', () => mobileMenu.classList.remove('open'));
+        });
+
+        // ── Scroll Progress Bar ──
+        window.addEventListener('scroll', () => {
+            const prog = document.getElementById('scroll-progress');
+            const pct = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+            prog.style.width = pct + '%';
+        });
+
+        // ── Animated Counters (Intersection Observer) ──
+        const counters = document.querySelectorAll('.counter-val');
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting || entry.target.dataset.animated) return;
+                entry.target.dataset.animated = 'true';
+                const target = parseInt(entry.target.dataset.target);
+                const prefix = entry.target.dataset.prefix || '';
+                const suffix = entry.target.dataset.suffix || '';
+                const duration = 1500;
+                const step = target / (duration / 16);
+                let current = 0;
+                const timer = setInterval(() => {
+                    current = Math.min(current + step, target);
+                    entry.target.textContent = prefix + Math.floor(current) + suffix;
+                    if (current >= target) clearInterval(timer);
+                }, 16);
+            });
+        }, { threshold: 0.5 });
+        counters.forEach(c => counterObserver.observe(c));
+
+        // ── Contact Form AJAX Submit ──
+        const form = document.getElementById('demo-form');
+        form && form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = form.querySelector('button[type=submit]');
+            btn.textContent = 'Sending...'; btn.disabled = true;
+            try {
+                const res = await fetch(form.action, {
+                    method: 'POST', body: new FormData(form),
+                    headers: { 'Accept': 'application/json' }
+                });
+                if (res.ok) {
+                    form.style.display = 'none';
+                    document.getElementById('form-success').classList.remove('hidden');
+                } else { btn.textContent = 'Error. Try again.'; btn.disabled = false; }
+            } catch { btn.textContent = 'Error. Try again.'; btn.disabled = false; }
+        });
+
+        // TODO Sprint 3: Scroll-triggered fade-in animations (Intersection Observer on .fade-in-hidden)
+        // TODO Sprint 3: Active nav highlight on scroll (Intersection Observer on each section)
+    </script>
 </body>
 </html>
