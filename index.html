@@ -606,8 +606,38 @@
             }
         });
 
-        // TODO Sprint 3: Scroll-triggered fade-in animations
-        // TODO Sprint 3: Active nav highlight on scroll
+        // ── Scroll-triggered Fade-in Animations ──
+        const faders = document.querySelectorAll('.fade-in-hidden');
+        const fadeObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.remove('fade-in-hidden');
+                    entry.target.classList.add('fade-in-visible');
+                    fadeObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        faders.forEach(fader => fadeObserver.observe(fader));
+
+        // ── Active Nav Highlight on Scroll ──
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-link');
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (scrollY >= sectionTop - 150) {
+                    current = section.getAttribute('id');
+                }
+            });
+            navLinks.forEach(link => {
+                link.classList.remove('text-teal');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('text-teal');
+                }
+            });
+        });
+
     </script>
 </body>
 </html>
